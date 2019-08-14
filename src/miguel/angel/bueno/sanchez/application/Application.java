@@ -1,9 +1,6 @@
 package miguel.angel.bueno.sanchez.application;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -11,6 +8,10 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -21,22 +22,26 @@ public class Application {
     private ServerSocket serverSocket;
     private Socket clientSocket;
     private Logger logger;
-    private String message;
-    private BufferedReader buffer;
     private Timer timer;
+    private ExecutorService pool;
+    public static AtomicBoolean terminateReceived = new AtomicBoolean(false);
     public static Map<String, Integer> database;
-    public static final String ipAddress = "localhost";
-    public static final int port = 4000;
-    public static final int backlog = 50;
+    private static final int timeout = 10000;
+    private static final String ipAddress = "localhost";
+    private static final int maxNumberOfThreads = 5;
+    private static final int port = 4000;
+    private static final int backlog = 50;
 
     public Application() throws IOException {
         serverSocket = new ServerSocket(port, backlog, InetAddress.getByName(ipAddress));
         database = new ConcurrentHashMap<>();
+        pool = Executors.newFixedThreadPool(maxNumberOfThreads);
     }
 
     public static void main(String[] args) throws Exception {
         Application application = new Application();
         application.initializeLogFile();
+
         //application.initializeTimer();
 
         System.out.println(System.lineSeparator() + "Running Server: " +
@@ -72,37 +77,35 @@ public class Application {
     }
 
     private void listen() throws IOException {
-        while (true) {
+        while (!terminateReceived.get()) {
+            //serverSocket.setSoTimeout(timeout);
             clientSocket = serverSocket.accept();
-            handleConnection();
+            pool.execute(new ConnectionHandler(clientSocket));
         }
+        terminateThreadPool();
     }
 
-    private void handleConnection() throws IOException {
-        openBufferedReader();
-        readMessageFromClientAndLog();
-    }
-
-    private void openBufferedReader() throws IOException {
-        InputStream inputStream = clientSocket.getInputStream();
-        InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
-        buffer = new BufferedReader(inputStreamReader);
-    }
-
-    private void readMessageFromClientAndLog() throws IOException {
-        message = buffer.readLine();
-        if (bufferIsNotEmptyAndMessageLengthEqualsNine()) {
-            logger.log(Level.INFO, message + System.lineSeparator());
+    private void terminateThreadPool() {
+        System.out.println("Terminating Application...");
+        pool.shutdown();
+        try {
+            if (!pool.awaitTermination(5, TimeUnit.SECONDS)) {
+                pool.shutdownNow();
+                if (!pool.awaitTermination(5, TimeUnit.SECONDS))
+                    System.err.println("Pool did not terminate");
+            }
+        } catch (InterruptedException ie) {
+            pool.shutdownNow();
+            Thread.currentThread().interrupt();
         }
-    }
-
-    private boolean bufferIsNotEmptyAndMessageLengthEqualsNine() {
-        return (message != null && message.length() == 9);
-
     }
 
     public InetAddress getSocketAddress() {
         return this.serverSocket.getInetAddress();
+    }
+
+    public ServerSocket getServerSocket() {
+        return this.serverSocket;
     }
 
 }

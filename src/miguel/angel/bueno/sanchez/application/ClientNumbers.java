@@ -6,7 +6,7 @@ import java.net.Socket;
 import java.text.DecimalFormat;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class Client {
+public class ClientNumbers {
 
     private Socket clientSocket;
     private String randomNumberFormatted;
@@ -14,7 +14,7 @@ public class Client {
     private static final String host = "localhost";
     private static final int randomIntegerUpperBoundExclusive = 1000000000;
 
-    public Client() throws IOException {
+    public ClientNumbers() throws IOException {
         InetAddress ipAddress = InetAddress.getByName(host);
         clientSocket = new Socket(ipAddress, port);
     }
@@ -51,15 +51,15 @@ public class Client {
         OutputStream os = clientSocket.getOutputStream();
         OutputStreamWriter osw = new OutputStreamWriter(os);
         BufferedWriter bw = new BufferedWriter(osw);
-        bw.write("terminate\n");
+        bw.write(randomNumberFormatted);
         bw.flush();
         bw.close();
     }
 
     public static void main(String[] args) throws IOException {
 
-        for (int i = 4; i < 5; i++) {
-            Client client = new Client();
+        for (int i = 0; i < 100000; i++) {
+            ClientNumbers client = new ClientNumbers();
             client.run();
         }
     }
