@@ -24,7 +24,7 @@ public class Application {
     private Logger logger;
     private Timer timer;
     private ExecutorService pool;
-    public static AtomicBoolean terminateReceived = new AtomicBoolean(false);
+    public static AtomicBoolean terminateReceived;
     public static Map<String, Integer> database;
     private static final int timeout = 10000;
     private static final String ipAddress = "localhost";
@@ -36,13 +36,13 @@ public class Application {
         serverSocket = new ServerSocket(port, backlog, InetAddress.getByName(ipAddress));
         database = new ConcurrentHashMap<>();
         pool = Executors.newFixedThreadPool(maxNumberOfThreads);
+        terminateReceived = new AtomicBoolean(false);
     }
 
     public static void main(String[] args) throws Exception {
         Application application = new Application();
         application.initializeLogFile();
-
-        //application.initializeTimer();
+        application.initializeTimer();
 
         System.out.println(System.lineSeparator() + "Running Server: " +
                 "Host=" + application.getSocketAddress().getHostAddress() +
@@ -59,7 +59,7 @@ public class Application {
             logger.addHandler(fileHandler);
             SimpleFormatter formatter = new SimpleFormatter();
             fileHandler.setFormatter(formatter);
-            //logger.setUseParentHandlers(false);
+            logger.setUseParentHandlers(false);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -69,20 +69,26 @@ public class Application {
         TimerTask timerTask = new TimerTask() {
             @Override
             public void run() {
-                System.out.println("System executing timer task");
+                if (!terminateReceived.get()) {
+                    System.out.println(database);
+                } else {
+                    this.cancel();
+                }
             }
         };
         Timer timer = new Timer("ApplicationTimer");
-        timer.scheduleAtFixedRate(timerTask, 30, 3000);
+        timer.scheduleAtFixedRate(timerTask, 0, 10000);
+        //logger.log(Level.INFO, message);
     }
 
     private void listen() throws IOException {
         while (!terminateReceived.get()) {
-            //serverSocket.setSoTimeout(timeout);
+            serverSocket.setSoTimeout(timeout);
             clientSocket = serverSocket.accept();
             pool.execute(new ConnectionHandler(clientSocket));
         }
         terminateThreadPool();
+        terminateServer();
     }
 
     private void terminateThreadPool() {
@@ -96,8 +102,11 @@ public class Application {
             }
         } catch (InterruptedException ie) {
             pool.shutdownNow();
-            Thread.currentThread().interrupt();
         }
+    }
+
+    private void terminateServer() {
+        Thread.currentThread().interrupt();
     }
 
     public InetAddress getSocketAddress() {

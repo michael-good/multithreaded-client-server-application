@@ -10,6 +10,7 @@ import java.net.Socket;
 public class ClientTerminate implements Runnable {
 
     private Socket clientSocket;
+    private BufferedWriter buffer;
     private static final int port = 4000;
     private static final String host = "localhost";
     private static final String terminateWord = "terminate";
@@ -22,18 +23,22 @@ public class ClientTerminate implements Runnable {
     @Override
     public void run() {
         try {
-            sendRandomNumberToServer();
+            openBufferedWriter();
+            sendTerminateToServer();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    private void sendRandomNumberToServer() throws IOException {
-        OutputStream os = clientSocket.getOutputStream();
-        OutputStreamWriter osw = new OutputStreamWriter(os);
-        BufferedWriter bw = new BufferedWriter(osw);
-        bw.write(terminateWord + "\n");
-        bw.flush();
+    private void openBufferedWriter() throws IOException {
+        OutputStream outputStream = clientSocket.getOutputStream();
+        OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream);
+        buffer = new BufferedWriter(outputStreamWriter);
+    }
+
+    private void sendTerminateToServer() throws IOException {
+        buffer.write(terminateWord + "\n");
+        buffer.flush();
     }
 
     public static void main(String[] args) throws IOException {

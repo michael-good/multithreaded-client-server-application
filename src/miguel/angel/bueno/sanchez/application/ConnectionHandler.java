@@ -68,9 +68,8 @@ public class ConnectionHandler implements Runnable {
     private void addMessageToDatabase() {
         if (isValidMessage()) {
             Application.database.put(message, Application.database.getOrDefault(message, 0) + 1);
-            System.out.println(Application.database);
         }
-        //logger.log(Level.INFO, message);
+
     }
 
     private boolean isValidMessage() {

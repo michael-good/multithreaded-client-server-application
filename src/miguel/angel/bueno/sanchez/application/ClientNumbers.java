@@ -1,6 +1,7 @@
 package miguel.angel.bueno.sanchez.application;
 
 import java.io.*;
+import java.net.ConnectException;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.text.DecimalFormat;
@@ -10,6 +11,7 @@ public class ClientNumbers {
 
     private Socket clientSocket;
     private String randomNumberFormatted;
+    private BufferedWriter buffer;
     private static final int port = 4000;
     private static final String host = "localhost";
     private static final int randomIntegerUpperBoundExclusive = 1000000000;
@@ -24,6 +26,7 @@ public class ClientNumbers {
         addLeadingZeroesToRandomNumber(randomNumber);
         appendNewLineSequenceToFormattedRandomNumber();
         try {
+            openBufferedWriter();
             sendRandomNumberToServer();
         } catch (IOException e) {
             System.err.println("There was an error writing data into buffer");
@@ -47,20 +50,27 @@ public class ClientNumbers {
         System.out.print(randomNumberFormatted);
     }
 
+    private void openBufferedWriter() throws IOException {
+        OutputStream outputStream = clientSocket.getOutputStream();
+        OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream);
+        BufferedWriter buffer = new BufferedWriter(outputStreamWriter);
+    }
+
     private void sendRandomNumberToServer() throws IOException {
-        OutputStream os = clientSocket.getOutputStream();
-        OutputStreamWriter osw = new OutputStreamWriter(os);
-        BufferedWriter bw = new BufferedWriter(osw);
-        bw.write(randomNumberFormatted);
-        bw.flush();
-        bw.close();
+        buffer.write(randomNumberFormatted);
+        buffer.flush();
+        buffer.close();
     }
 
     public static void main(String[] args) throws IOException {
-
         for (int i = 0; i < 100000; i++) {
-            ClientNumbers client = new ClientNumbers();
-            client.run();
+            try {
+                ClientNumbers client = new ClientNumbers();
+                client.run();
+            } catch (ConnectException e) {
+                System.err.println("Server closed, disconnecting all clients...");
+                return;
+            }
         }
     }
 
