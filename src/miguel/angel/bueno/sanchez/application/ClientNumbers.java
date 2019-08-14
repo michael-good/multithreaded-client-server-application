@@ -1,9 +1,6 @@
 package miguel.angel.bueno.sanchez.application;
 
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
+import java.io.*;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.text.DecimalFormat;
@@ -28,7 +25,7 @@ public class Client {
         appendNewLineSequenceToFormattedRandomNumber();
         try {
             sendRandomNumberToServer();
-        } catch (IOException e){
+        } catch (IOException e) {
             System.err.println("There was an error writing data into buffer");
         }
     }
@@ -47,21 +44,21 @@ public class Client {
     private void appendNewLineSequenceToFormattedRandomNumber() {
         String newLineSequence = System.lineSeparator();
         randomNumberFormatted += newLineSequence;
-        System.out.print(randomNumberFormatted.replace("\n", "\\n"));
+        System.out.print(randomNumberFormatted);
     }
 
     private void sendRandomNumberToServer() throws IOException {
         OutputStream os = clientSocket.getOutputStream();
         OutputStreamWriter osw = new OutputStreamWriter(os);
         BufferedWriter bw = new BufferedWriter(osw);
-        bw.write(randomNumberFormatted);
+        bw.write("terminate\n");
         bw.flush();
         bw.close();
     }
 
     public static void main(String[] args) throws IOException {
 
-        for (int i = 0; i < 5; i++) {
+        for (int i = 4; i < 5; i++) {
             Client client = new Client();
             client.run();
         }
