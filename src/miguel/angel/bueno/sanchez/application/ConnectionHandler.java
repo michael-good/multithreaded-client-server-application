@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.Socket;
+import java.net.SocketException;
 
 public class ConnectionHandler implements Runnable {
 
@@ -21,18 +22,22 @@ public class ConnectionHandler implements Runnable {
     @Override
     public void run() {
         try {
+            deactivateNagleAlgorithm();
             handleConnection();
         } catch (IOException e) {
-            System.err.println("ERROR: Unable to open input stream reader" +
-                    " or to properly read messages");
+            System.err.println("ERROR: Messages could not be read from client ... " + e);
         } finally {
             try {
                 buffer.close();
                 clientSocket.close();
             } catch (IOException e) {
-                System.err.println("ERROR: Unable to close buffer and/or socket");
+                System.err.println("ERROR: Unable to close buffer and/or socket" + e);
             }
         }
+    }
+
+    private void deactivateNagleAlgorithm() throws SocketException {
+        clientSocket.setTcpNoDelay(true);
     }
 
     private void handleConnection() throws IOException {

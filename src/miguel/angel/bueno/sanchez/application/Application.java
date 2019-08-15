@@ -27,10 +27,9 @@ public class Application {
     private ExecutorService pool;
     public static AtomicBoolean terminateReceived;
     public static Map<String, Integer> database;
-    private int previousDatabaseSize = 0;
     private static final int timeout = 10000;
     private static final String ipAddress = "localhost";
-    private static final int maxNumberOfThreads = 8;
+    private static final int maxNumberOfThreads = 5;
     private static final int port = 4000;
     private static final int backlog = 50;
 
@@ -41,16 +40,20 @@ public class Application {
         terminateReceived = new AtomicBoolean(false);
     }
 
-    public static void main(String[] args) throws Exception {
-        Application application = new Application();
-        application.initializeLogFile();
-        application.initializeTimer();
+    public static void main(String[] args) {
+        try {
+            Application application = new Application();
+            application.initializeLogFile();
+            application.initializeTimer();
 
-        System.out.println(System.lineSeparator() + "Running Server: " +
-                "Host=" + application.getSocketAddress().getHostAddress() +
-                " Port=" + application.port);
+            System.out.println(System.lineSeparator() + "Running Server: " +
+                    "Host=" + application.getSocketAddress().getHostAddress() +
+                    " Port=" + application.port);
 
-        application.listen();
+            application.listen();
+        } catch (IOException e) {
+            System.err.println("ERROR: Server socket could not be initialized ... " + e);
+        }
     }
 
     public void initializeLogFile() {
@@ -63,45 +66,60 @@ public class Application {
             fileHandler.setFormatter(formatter);
             logger.setUseParentHandlers(false);
         } catch (IOException e) {
-            e.printStackTrace();
+            System.err.println("ERROR: Log file could not be initialized ... " + e);
         }
     }
 
     public void initializeTimer() {
         TimerTask timerTask = new TimerTask() {
+
+            private int previousDatabaseSize = 0;
+            private int numberOfDuplicates;
+
             @Override
             public void run() {
                 if (!terminateReceived.get()) {
-                    int numberOfDuplicates = 0;
-                    for (String key : database.keySet()) {
-                        if (database.get(key) > 1) {
-                            numberOfDuplicates++;
-                            database.put(key, 1);
-                        }
-                    }
-                    System.out.print("Received " +
-                            (database.size() - numberOfDuplicates - previousDatabaseSize) +
-                            " unique numbers, ");
-                    previousDatabaseSize = database.size();
-                    System.out.print(numberOfDuplicates + " duplicates. ");
-                    System.out.println("Unique total " + database.size());
+                    getNumberOfDuplicates();
+                    printPeriodicReport();
                 } else {
                     this.cancel();
                 }
+            }
+
+            private void getNumberOfDuplicates() {
+                numberOfDuplicates = 0;
+                for (ConcurrentHashMap.Entry<String, Integer> entry : database.entrySet()) {
+                    if (entry.getValue() > 1) {
+                        numberOfDuplicates++;
+                        database.put(entry.getKey(), 1);
+                    }
+                }
+            }
+
+            private void printPeriodicReport() {
+                System.out.print("Received " +
+                        (database.size() - numberOfDuplicates - previousDatabaseSize) +
+                        " unique numbers, ");
+                previousDatabaseSize = database.size();
+                System.out.print(numberOfDuplicates + " duplicates. ");
+                System.out.println("Unique total " + database.size());
             }
         };
         Timer timer = new Timer("ApplicationTimer");
         timer.scheduleAtFixedRate(timerTask, 0, 10000);
     }
 
-    private void listen() throws IOException {
+    private void listen() {
         while (!terminateReceived.get()) {
             try {
-                //serverSocket.setSoTimeout(timeout);
+                serverSocket.setSoTimeout(timeout);
                 clientSocket = serverSocket.accept();
                 pool.execute(new ConnectionHandler(clientSocket));
             } catch (SocketTimeoutException e) {
-                System.err.println("System timed out...");
+                System.err.println("System timed out..." + e);
+                terminateReceived.set(true);
+            } catch (IOException e) {
+                System.err.println("ERROR: Server could not establish connection with client ... " + e);
                 terminateReceived.set(true);
             }
         }
@@ -111,7 +129,7 @@ public class Application {
     }
 
     private void terminateThreadPool() {
-        System.err.println("Terminating Application...");
+        System.out.println("Terminating Application...");
         pool.shutdown();
         try {
             if (!pool.awaitTermination(5, TimeUnit.SECONDS)) {
@@ -126,10 +144,10 @@ public class Application {
     }
 
     private void writeNumbersIntoLogFile() {
-        for (String key : database.keySet()) {
-            logger.log(Level.INFO, key + System.lineSeparator());
+        for (ConcurrentHashMap.Entry<String, Integer> entry : database.entrySet()) {
+            logger.log(Level.INFO, entry.getKey() + System.lineSeparator());
         }
-        System.err.println("Log generated");
+        System.out.println("Log generated");
     }
 
     private void terminateServer() {

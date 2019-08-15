@@ -7,6 +7,7 @@
       <change beforePath="$PROJECT_DIR$/src/miguel/angel/bueno/sanchez/application/Application.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/miguel/angel/bueno/sanchez/application/Application.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/miguel/angel/bueno/sanchez/application/ClientNumbers.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/miguel/angel/bueno/sanchez/application/ClientNumbers.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/miguel/angel/bueno/sanchez/application/ClientTerminate.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/miguel/angel/bueno/sanchez/application/ClientTerminate.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/miguel/angel/bueno/sanchez/application/ConnectionHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/miguel/angel/bueno/sanchez/application/ConnectionHandler.java" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -128,6 +129,9 @@
       <updated>1565632361236</updated>
     </task>
     <servers />
+  </component>
+  <component name="UnknownFeatures">
+    <option featureType="com.intellij.fileTypeFactory" implementationName="*.log" />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">

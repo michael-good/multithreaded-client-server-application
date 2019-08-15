@@ -4,6 +4,7 @@ import java.io.*;
 import java.net.ConnectException;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.net.SocketException;
 import java.text.DecimalFormat;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -21,16 +22,21 @@ public class ClientNumbers {
         clientSocket = new Socket(ipAddress, port);
     }
 
-    public void run() throws IOException {
-        int randomNumber = createRandomNumber();
-        addLeadingZeroesToRandomNumber(randomNumber);
-        appendNewLineSequenceToFormattedRandomNumber();
+    public void run() {
         try {
+            deactivateNagleAlgorithm();
+            int randomNumber = createRandomNumber();
+            addLeadingZeroesToRandomNumber(randomNumber);
+            appendNewLineSequenceToFormattedRandomNumber();
             openBufferedWriter();
             sendRandomNumberToServer();
         } catch (IOException e) {
-            System.err.println("There was an error writing data into buffer");
+            System.err.println("ERROR: Messages could not be sent to server ... " + e);
         }
+    }
+
+    private void deactivateNagleAlgorithm() throws SocketException {
+        clientSocket.setTcpNoDelay(true);
     }
 
     private int createRandomNumber() {
@@ -62,16 +68,17 @@ public class ClientNumbers {
         buffer.close();
     }
 
-    public static void main(String[] args) throws IOException {
-        for (int i = 0; i < 10000; i++) {
+    public static void main(String[] args) {
+        for (int i = 0; i < 1000000; i++) {
             try {
                 ClientNumbers client = new ClientNumbers();
                 client.run();
             } catch (ConnectException e) {
-                System.err.println("Server closed, disconnecting all clients...");
+                System.err.println("Server closed, disconnecting all clients ... " + e);
                 return;
+            } catch (IOException e) {
+                System.err.println("ERROR: Socket could not be initialized ... " + e);
             }
         }
     }
-
 }
