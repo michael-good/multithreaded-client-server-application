@@ -69,7 +69,7 @@ public class ClientNumbers {
     }
 
     public static void main(String[] args) {
-        for (int i = 0; i < 1000000; i++) {
+        for (;;) {
             try {
                 ClientNumbers client = new ClientNumbers();
                 client.run();

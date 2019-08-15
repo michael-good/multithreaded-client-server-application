@@ -27,7 +27,7 @@ public class Application {
     private ExecutorService pool;
     public static AtomicBoolean terminateReceived;
     public static Map<String, Integer> database;
-    private static final int timeout = 10000;
+    private static final int timeout = 20000;
     private static final String ipAddress = "localhost";
     private static final int maxNumberOfThreads = 5;
     private static final int port = 4000;
