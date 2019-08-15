@@ -44,7 +44,8 @@ public class ClientTerminate implements Runnable {
     public static void main(String[] args) throws IOException {
         ClientTerminate client = new ClientTerminate();
         client.run();
-        client.run();
+        ClientTerminate client1 = new ClientTerminate();
+        client1.run();
 
     }
 }

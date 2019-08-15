@@ -27,9 +27,10 @@ public class Application {
     private ExecutorService pool;
     public static AtomicBoolean terminateReceived;
     public static Map<String, Integer> database;
+    private int previousDatabaseSize = 0;
     private static final int timeout = 10000;
     private static final String ipAddress = "localhost";
-    private static final int maxNumberOfThreads = 5;
+    private static final int maxNumberOfThreads = 8;
     private static final int port = 4000;
     private static final int backlog = 50;
 
@@ -71,7 +72,19 @@ public class Application {
             @Override
             public void run() {
                 if (!terminateReceived.get()) {
-                    System.out.println(database);
+                    int numberOfDuplicates = 0;
+                    for (String key : database.keySet()) {
+                        if (database.get(key) > 1) {
+                            numberOfDuplicates++;
+                            database.put(key, 1);
+                        }
+                    }
+                    System.out.print("Received " +
+                            (database.size() - numberOfDuplicates - previousDatabaseSize) +
+                            " unique numbers, ");
+                    previousDatabaseSize = database.size();
+                    System.out.print(numberOfDuplicates + " duplicates. ");
+                    System.out.println("Unique total " + database.size());
                 } else {
                     this.cancel();
                 }
@@ -79,13 +92,12 @@ public class Application {
         };
         Timer timer = new Timer("ApplicationTimer");
         timer.scheduleAtFixedRate(timerTask, 0, 10000);
-        //logger.log(Level.INFO, message);
     }
 
     private void listen() throws IOException {
         while (!terminateReceived.get()) {
             try {
-                serverSocket.setSoTimeout(timeout);
+                //serverSocket.setSoTimeout(timeout);
                 clientSocket = serverSocket.accept();
                 pool.execute(new ConnectionHandler(clientSocket));
             } catch (SocketTimeoutException e) {
@@ -94,15 +106,17 @@ public class Application {
             }
         }
         terminateThreadPool();
+        writeNumbersIntoLogFile();
         terminateServer();
     }
 
     private void terminateThreadPool() {
-        System.out.println("Terminating Application...");
+        System.err.println("Terminating Application...");
         pool.shutdown();
         try {
             if (!pool.awaitTermination(5, TimeUnit.SECONDS)) {
                 pool.shutdownNow();
+                System.err.println("Pool shutting down now");
                 if (!pool.awaitTermination(5, TimeUnit.SECONDS))
                     System.err.println("Pool did not terminate");
             }
@@ -111,8 +125,15 @@ public class Application {
         }
     }
 
+    private void writeNumbersIntoLogFile() {
+        for (String key : database.keySet()) {
+            logger.log(Level.INFO, key + System.lineSeparator());
+        }
+        System.err.println("Log generated");
+    }
+
     private void terminateServer() {
-        Thread.currentThread().interrupt();
+        System.exit(0);
     }
 
     public InetAddress getSocketAddress() {
