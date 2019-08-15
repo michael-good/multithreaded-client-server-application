@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketTimeoutException;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -83,9 +84,14 @@ public class Application {
 
     private void listen() throws IOException {
         while (!terminateReceived.get()) {
-            serverSocket.setSoTimeout(timeout);
-            clientSocket = serverSocket.accept();
-            pool.execute(new ConnectionHandler(clientSocket));
+            try {
+                serverSocket.setSoTimeout(timeout);
+                clientSocket = serverSocket.accept();
+                pool.execute(new ConnectionHandler(clientSocket));
+            } catch (SocketTimeoutException e) {
+                System.err.println("System timed out...");
+                terminateReceived.set(true);
+            }
         }
         terminateThreadPool();
         terminateServer();

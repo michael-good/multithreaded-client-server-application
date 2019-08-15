@@ -53,7 +53,7 @@ public class ClientNumbers {
     private void openBufferedWriter() throws IOException {
         OutputStream outputStream = clientSocket.getOutputStream();
         OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream);
-        BufferedWriter buffer = new BufferedWriter(outputStreamWriter);
+        buffer = new BufferedWriter(outputStreamWriter);
     }
 
     private void sendRandomNumberToServer() throws IOException {

@@ -3,14 +3,13 @@
   <component name="ChangeListManager">
     <list default="true" id="5d2a24d8-d008-478d-aec3-45a1ef2107c5" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/NewRelic-Application.iml" beforeDir="false" afterPath="$PROJECT_DIR$/NewRelic-Application.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/NewRelic-Application/miguel/angel/bueno/sanchez/application/Application$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/NewRelic-Application/miguel/angel/bueno/sanchez/application/Application$1.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/NewRelic-Application/miguel/angel/bueno/sanchez/application/Application.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/NewRelic-Application/miguel/angel/bueno/sanchez/application/Application.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/NewRelic-Application/miguel/angel/bueno/sanchez/application/ClientNumbers.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/NewRelic-Application/miguel/angel/bueno/sanchez/application/ClientNumbers.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/NewRelic-Application/miguel/angel/bueno/sanchez/application/ConnectionHandler.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/NewRelic-Application/miguel/angel/bueno/sanchez/application/ConnectionHandler.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/NewRelic-Application/miguel/angel/bueno/sanchez/application/ClientTerminate.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/NewRelic-Application/miguel/angel/bueno/sanchez/application/ClientTerminate.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/miguel/angel/bueno/sanchez/application/Application.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/miguel/angel/bueno/sanchez/application/Application.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/miguel/angel/bueno/sanchez/application/ClientNumbers.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/miguel/angel/bueno/sanchez/application/ClientNumbers.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/miguel/angel/bueno/sanchez/application/ClientTerminate.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/miguel/angel/bueno/sanchez/application/ClientTerminate.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/miguel/angel/bueno/sanchez/application/ConnectionHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/miguel/angel/bueno/sanchez/application/ConnectionHandler.java" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -40,7 +39,7 @@
     <property name="Repository.Attach.JavaDocs" value="false" />
     <property name="Repository.Attach.Sources" value="false" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
-    <property name="last_opened_file_path" value="$USER_HOME$/Desktop/commons-lang3-3.9-bin/commons-lang3-3.9" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/lib/commons-lang3-3.9-bin/commons-lang3-3.9" />
     <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
@@ -57,7 +56,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Application.ClientTerminate">
+  <component name="RunManager" selected="Application.Application">
     <configuration name="Application" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="miguel.angel.bueno.sanchez.application.Application" />
       <module name="NewRelic-Application" />
@@ -144,5 +143,16 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/miguel/angel/bueno/sanchez/application/ClientNumbers.java</url>
+          <line>24</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>
