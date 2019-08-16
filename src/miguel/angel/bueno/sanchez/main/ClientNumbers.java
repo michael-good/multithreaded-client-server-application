@@ -2,36 +2,35 @@ package miguel.angel.bueno.sanchez.main;
 
 import java.io.*;
 import java.net.ConnectException;
-import java.net.InetAddress;
-import java.net.Socket;
 import java.net.SocketException;
 import java.text.DecimalFormat;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class ClientNumbers {
+public class ClientNumbers extends Client {
 
-    private Socket clientSocket;
     private String randomNumberFormatted;
-    private BufferedWriter buffer;
-    private static final int port = 4000;
-    private static final String host = "localhost";
     private static final int randomIntegerUpperBoundExclusive = 1000000000;
 
     public ClientNumbers() throws IOException {
-        InetAddress ipAddress = InetAddress.getByName(host);
-        clientSocket = new Socket(ipAddress, port);
+        super();
     }
 
-    public void run() {
+    public void connect() {
         try {
             deactivateNagleAlgorithm();
             int randomNumber = createRandomNumber();
             addLeadingZeroesToRandomNumber(randomNumber);
             appendNewLineSequenceToFormattedRandomNumber();
             openBufferedWriter();
-            sendRandomNumberToServer();
+            sendRandomNumberToServer(randomNumberFormatted);
         } catch (IOException e) {
             System.err.println("ERROR: Messages could not be sent to server ... " + e);
+        } finally {
+            try {
+                disconnect();
+            } catch (IOException e) {
+                System.err.println("ERROR: Could not close ClientTerminate ... " + e);
+            }
         }
     }
 
@@ -56,28 +55,29 @@ public class ClientNumbers {
         System.out.print(randomNumberFormatted);
     }
 
-    private void openBufferedWriter() throws IOException {
-        OutputStream outputStream = clientSocket.getOutputStream();
-        OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream);
-        buffer = new BufferedWriter(outputStreamWriter);
+    protected void openBufferedWriter() throws IOException {
+        super.openBufferedWriter();
     }
 
-    private void sendRandomNumberToServer() throws IOException {
-        buffer.write(randomNumberFormatted);
-        buffer.flush();
-        buffer.close();
+    protected void sendRandomNumberToServer(String message) throws IOException {
+        super.sendMessageToServer(message);
+    }
+
+    protected void disconnect() throws IOException {
+        super.disconnect();
     }
 
     public static void main(String[] args) {
-        for (;;) {
+        for (; ; ) {
             try {
                 ClientNumbers client = new ClientNumbers();
-                client.run();
+                client.connect();
             } catch (ConnectException e) {
                 System.err.println("Server closed, disconnecting all clients ... " + e);
                 return;
             } catch (IOException e) {
                 System.err.println("ERROR: Socket could not be initialized ... " + e);
+                return;
             }
         }
     }

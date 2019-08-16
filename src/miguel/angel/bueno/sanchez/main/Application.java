@@ -40,22 +40,6 @@ public class Application {
         terminateReceived = new AtomicBoolean(false);
     }
 
-    public static void main(String[] args) {
-        try {
-            Application application = new Application();
-            application.initializeLogFile();
-            application.initializeTimer();
-
-            System.out.println(System.lineSeparator() + "Running Server: " +
-                    "Host=" + application.getSocketAddress().getHostAddress() +
-                    " Port=" + application.port);
-
-            application.listen();
-        } catch (IOException e) {
-            System.err.println("ERROR: Server socket could not be initialized ... " + e);
-        }
-    }
-
     private void initializeLogFile() {
         logger = Logger.getLogger(Application.class.getName());
         FileHandler fileHandler;
@@ -160,6 +144,22 @@ public class Application {
 
     public ServerSocket getServerSocket() {
         return this.serverSocket;
+    }
+
+    public static void main(String[] args) {
+        try {
+            Application application = new Application();
+            application.initializeLogFile();
+            application.initializeTimer();
+
+            System.out.println(System.lineSeparator() + "Running Server: " +
+                    "Host=" + application.getSocketAddress().getHostAddress() +
+                    " Port=" + application.port);
+
+            application.listen();
+        } catch (IOException e) {
+            System.err.println("ERROR: Server socket could not be initialized ... " + e);
+        }
     }
 
 }

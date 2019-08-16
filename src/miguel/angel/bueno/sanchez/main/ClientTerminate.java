@@ -1,55 +1,55 @@
 package miguel.angel.bueno.sanchez.main;
 
-import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.net.InetAddress;
-import java.net.Socket;
+import java.net.ConnectException;
+import java.net.UnknownHostException;
 
-public class ClientTerminate {
+public class ClientTerminate extends Client {
 
-    private Socket clientSocket;
-    private BufferedWriter buffer;
-    private static final int port = 4000;
-    private static final String host = "localhost";
     private static final String terminateWord = "terminate";
 
     public ClientTerminate() throws IOException {
-        InetAddress ipAddress = InetAddress.getByName(host);
-        clientSocket = new Socket(ipAddress, port);
+        super();
     }
 
-    public void run() {
+    public void connect() {
         try {
             openBufferedWriter();
-            sendTerminateToServer();
+            sendTerminateToServer(terminateWord + System.lineSeparator());
         } catch (IOException e) {
             System.err.println("ERROR: Messages could not be sent to server ... " + e);
+        } finally {
+            try {
+                disconnect();
+            } catch (IOException e) {
+                System.err.println("ERROR: Could not close ClientTerminate ... " + e);
+            }
         }
     }
 
-    private void openBufferedWriter() throws IOException {
-        OutputStream outputStream = clientSocket.getOutputStream();
-        OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream);
-        buffer = new BufferedWriter(outputStreamWriter);
+    protected void openBufferedWriter() throws IOException {
+        super.openBufferedWriter();
     }
 
-    private void sendTerminateToServer() throws IOException {
-        buffer.write(terminateWord + System.lineSeparator());
-        buffer.flush();
-        buffer.close();
+    protected void sendTerminateToServer(String message) throws IOException {
+        super.sendMessageToServer(message);
+    }
+
+    protected void disconnect() throws IOException {
+        super.disconnect();
     }
 
     public static void main(String[] args) throws IOException {
         try {
             for (int i = 0; i < 2; i++) {
                 ClientTerminate client = new ClientTerminate();
-                client.run();
+                client.connect();
             }
             System.out.println("Terminating server...");
-        } catch (IOException e) {
+        } catch (ConnectException e) {
             System.err.println("Server closed, disconnecting all clients ... " + e);
+        } catch (IOException e) {
+            System.err.println("ERROR: Socket could not be initialized ... " + e);
         }
     }
 }
