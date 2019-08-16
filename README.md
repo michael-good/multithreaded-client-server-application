@@ -70,19 +70,19 @@ ClientNumbers detects when Application server is closed and also stops executing
 Type the following commands from the command line in order:
 
 ```console
-miguel@miguel:~$ cd ~
+foo@bar:~$ cd ~
 ```
 ```console
-miguel@miguel:~$ git clone https://github.com/michael-good/multithreaded-client-server-application.git
+foo@bar:~$ git clone https://github.com/michael-good/multithreaded-client-server-application.git
 ```
 ```console
-miguel@miguel:~$ cd multithreaded-client-server-application
+foo@bar:~$ cd multithreaded-client-server-application
 ```
 ```console
-miguel@miguel:~$ mkdir out
+foo@bar:~$ mkdir out
 ```
 ```console
-miguel@miguel:~$ javac -cp lib/commons-lang3-3.9.jar -d out src/miguel/angel/bueno/sanchez/main/*.java
+foo@bar:~$ javac -cp lib/commons-lang3-3.9.jar -d out src/miguel/angel/bueno/sanchez/main/*.java
 ```
 
 All project files are now compiled into out/ directory.
@@ -90,13 +90,13 @@ In order to properly execute the program, one must open three different terminal
 Following commands will execute the server Application and clients. Use one of them for each terminal in the corresponding order:
 
 ```console
-miguel@miguel:~$ java -cp lib/commons-lang3-3.9.jar:out miguel.angel.bueno.sanchez.main.Application
+foo@bar:~$ java -cp lib/commons-lang3-3.9.jar:out miguel.angel.bueno.sanchez.main.Application
 ```
 ```console
-miguel@miguel:~$ java -cp lib/commons-lang3-3.9.jar:out miguel.angel.bueno.sanchez.main.ClientNumbers
+foo@bar:~$ java -cp lib/commons-lang3-3.9.jar:out miguel.angel.bueno.sanchez.main.ClientNumbers
 ```
 ```console
-miguel@miguel:~$ java -cp lib/commons-lang3-3.9.jar:out miguel.angel.bueno.sanchez.main.ClientTerminate
+foo@bar:~$ java -cp lib/commons-lang3-3.9.jar:out miguel.angel.bueno.sanchez.main.ClientTerminate
 ```
 
 ## Windows
