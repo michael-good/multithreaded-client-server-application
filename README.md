@@ -68,11 +68,14 @@ ClientNumbers detects when Application server is closed and also stops executing
 # Build and run instructions
 ## Linux
 Type the following commands from the command line in order:
+
+```console
 1. cd ~
 2. git clone https://github.com/michael-good/multithreaded-client-server-application.git
 3. cd multithreaded-client-server-application
 4. mkdir out
 5. javac -cp lib/commons-lang3-3.9.jar -d out src/miguel/angel/bueno/sanchez/main/*.java
+```
 
 All project files are now compiled into out/ directory.
 In order to properly execute the program, one must open three different terminals up and navigate to ~/multithreaded-client-server-application.
