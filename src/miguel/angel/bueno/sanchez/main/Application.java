@@ -1,4 +1,4 @@
-package miguel.angel.bueno.sanchez.application;
+package miguel.angel.bueno.sanchez.main;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -56,7 +56,7 @@ public class Application {
         }
     }
 
-    public void initializeLogFile() {
+    private void initializeLogFile() {
         logger = Logger.getLogger(Application.class.getName());
         FileHandler fileHandler;
         try {
@@ -70,7 +70,7 @@ public class Application {
         }
     }
 
-    public void initializeTimer() {
+    private void initializeTimer() {
         TimerTask timerTask = new TimerTask() {
 
             private int previousDatabaseSize = 0;

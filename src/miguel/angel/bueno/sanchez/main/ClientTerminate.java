@@ -1,4 +1,4 @@
-package miguel.angel.bueno.sanchez.application;
+package miguel.angel.bueno.sanchez.main;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -47,6 +47,7 @@ public class ClientTerminate {
                 ClientTerminate client = new ClientTerminate();
                 client.run();
             }
+            System.out.println("Terminating server...");
         } catch (IOException e) {
             System.err.println("Server closed, disconnecting all clients ... " + e);
         }

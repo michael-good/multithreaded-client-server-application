@@ -1,4 +1,4 @@
-package miguel.angel.bueno.sanchez.application;
+package miguel.angel.bueno.sanchez.main;
 
 import java.io.*;
 import java.net.ConnectException;

@@ -1,4 +1,4 @@
-package miguel.angel.bueno.sanchez.application;
+package miguel.angel.bueno.sanchez.main;
 
 import org.apache.commons.lang3.StringUtils;
 

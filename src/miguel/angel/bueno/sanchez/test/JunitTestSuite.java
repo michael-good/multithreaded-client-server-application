@@ -6,7 +6,8 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 
 @Suite.SuiteClasses({
-        TestClient.class
+        TestClientTerminate.class,
+        TestClientNumbers.class
 })
 
 public class JunitTestSuite {
