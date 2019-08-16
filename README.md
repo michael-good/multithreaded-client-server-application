@@ -39,6 +39,10 @@ total: 567231
 followed by a server-native newline sequence, the Application must
 disconnect all clients and perform a clean shutdown as quickly as possible.
 
+# Project structure
+
+![alt text](/docs/classes-scheme.png)
+
 # Build and run instructions
 ## Linux
 Type the following commands from the command line in order:
@@ -54,6 +58,8 @@ Following commands will execute the server Application and clients. Use one of t
 - java -cp lib/commons-lang3-3.9.jar:out miguel.angel.bueno.sanchez.main.Application
 - java -cp lib/commons-lang3-3.9.jar:out miguel.angel.bueno.sanchez.main.ClientNumbers
 - java -cp lib/commons-lang3-3.9.jar:out miguel.angel.bueno.sanchez.main.ClientTerminate
+
+## Windows
 
 # Dependencies and other considerations
 This project has been written using Java 8 OpenSDK (Java 1.8 / OpenJDK8).
