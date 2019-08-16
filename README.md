@@ -43,6 +43,28 @@ disconnect all clients and perform a clean shutdown as quickly as possible.
 
 ![alt text](/docs/classes-scheme.png)
 
+When Application is run, it opens a server socket in a localhost and port 4000. It waits for 20 seconds for someone to connect (default timeout). It also starts a timer
+and creates a blank log file named numbers.log.
+
+User can then run ClientNumbers, which will create an infinite number of clients sequentially that will try to connect to the server by sending 
+nine decimal digit numbers followed by a server native new line (\r\n for Windows, \n for Linux and \r for MAC). Each client sends one number and disconnects.
+
+On the server side, Application will manage such connections creating a thread for each one. Each thread (ConnectionHandler task) has the task of parsing input data,
+determining if it is valid and if so, storing it in a ConcurrentHashMap. 
+
+The aforementioned map registers all input numbers as keys, which must be unique. If a duplicated number already present in the map is received, the value of such key is incremented by one.
+
+Every 10 seconds, the timer created by Application is responsible of generating and printing a report that gives information about how many unique and duplicate numbers have been received
+since the last 10 seconds period and the total amount of unique numbers received during the whole execution of the system. ConcurrentHashMap values are reset after the report is generated. However,
+keys are maintained in order to be able to write all de-duplicated numbers received into the log file.
+
+If the user wants to stop the program, he must run ClientTerminate, which will send a terminate command. Such command shuts down gracefully the server Application as soon as possible.
+
+Right before server Application is closed, it writes all unique numbers stored in ConcurrentHashMap into the log file created at the beginning.
+
+ClientNumbers detects when Application server is closed and also stops executing.
+
+
 # Build and run instructions
 ## Linux
 Type the following commands from the command line in order:
