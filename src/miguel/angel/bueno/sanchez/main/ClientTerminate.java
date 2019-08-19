@@ -2,7 +2,6 @@ package miguel.angel.bueno.sanchez.main;
 
 import java.io.IOException;
 import java.net.ConnectException;
-import java.net.UnknownHostException;
 
 public class ClientTerminate extends Client {
 
@@ -12,6 +11,7 @@ public class ClientTerminate extends Client {
         super();
     }
 
+    @Override
     public void connect() {
         try {
             openBufferedWriter();
